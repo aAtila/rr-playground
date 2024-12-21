@@ -1,4 +1,10 @@
-import { LoaderFunctionArgs, useLoaderData, Form } from "react-router";
+import {
+  LoaderFunctionArgs,
+  useLoaderData,
+  Form,
+  redirect,
+  ActionFunctionArgs,
+} from "react-router";
 import Button from "../../components/ui/button";
 import Input from "../../components/ui/input";
 import Select from "../../components/ui/select";
@@ -10,19 +16,22 @@ export const loader = ({ request, params }: LoaderFunctionArgs) => {
   return { id: params.id, category };
 };
 
-export const action = async ({ request }: { request: Request }) => {
+export const action = async ({ request, params }: ActionFunctionArgs) => {
   const formData = await request.formData();
   const data = Object.fromEntries(formData);
   const url = new URL(request.url);
   const category = url.searchParams.get("category");
-  console.log(`action function:`, { data });
 
   if (data.intent === "create" && category) {
     const ad = await createAd(category);
+    const redirectUrl = new URL(`/create-ad/${ad.id}`, url.origin);
+    redirectUrl.searchParams.set("category", category);
 
-    console.log(`action function:`, { ad });
+    return redirect(redirectUrl.href);
+  }
 
-    return { ad, formData: data };
+  if (data.intent === "submit") {
+    console.log(`data from submit action:`, { adId: params.id, data });
   }
 
   return data;

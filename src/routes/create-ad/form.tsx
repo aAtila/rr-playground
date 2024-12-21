@@ -2,15 +2,19 @@ import {
   LoaderFunctionArgs,
   useLoaderData,
   Form,
-  redirect,
   ActionFunctionArgs,
+  useSearchParams,
+  useNavigate,
 } from "react-router";
 import Button from "../../components/ui/button";
 import Input from "../../components/ui/input";
 import Select from "../../components/ui/select";
 import { createAd } from "../../api/create-ad";
+import { CATEGORIES_MAP } from "./category";
 
 export const loader = ({ request, params }: LoaderFunctionArgs) => {
+  console.log(`loader called`);
+
   const url = new URL(request.url);
   const category = url.searchParams.get("category");
   return { id: params.id, category };
@@ -19,32 +23,41 @@ export const loader = ({ request, params }: LoaderFunctionArgs) => {
 export const action = async ({ request, params }: ActionFunctionArgs) => {
   const formData = await request.formData();
   const data = Object.fromEntries(formData);
-  const url = new URL(request.url);
-  const category = url.searchParams.get("category");
 
-  if (data.intent === "create" && category) {
-    const ad = await createAd(category);
-    const redirectUrl = new URL(`/create-ad/${ad.id}`, url.origin);
-    redirectUrl.searchParams.set("category", category);
-
-    return redirect(redirectUrl.href);
-  }
-
-  if (data.intent === "submit") {
-    console.log(`data from submit action:`, { adId: params.id, data });
-  }
+  console.log(`data from submit action:`, { adId: params.id, data });
 
   return data;
 };
 
 export default function CreateAdForm() {
-  const { id, category } = useLoaderData();
+  const { id } = useLoaderData();
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const category = searchParams.get("category") || undefined;
+
+  const handleCategoryChange = async (
+    e: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    const newCategory = e.target.value;
+    const ad = await createAd(newCategory);
+    navigate(`/create-ad/${ad.id}?category=${ad.category}`);
+  };
 
   return (
     <main className="max-w-md mx-auto">
       <h1>Create ad</h1>
-      <small>
-        Category: {category}, ID: {id}
+      <small className="flex gap-2 items-center justify-center mt-2">
+        ID: {id}
+        <Select
+          name="category"
+          defaultValue={category}
+          className="p-1"
+          onChange={handleCategoryChange}
+        >
+          {Array.from(CATEGORIES_MAP.entries()).map(([value, label]) => (
+            <option value={value}>{label}</option>
+          ))}
+        </Select>
       </small>
       <Form method="post" className="mt-8 grid gap-4">
         <Input type="text" name="title" placeholder="Title" />
@@ -123,9 +136,6 @@ export default function CreateAdForm() {
         <div className="flex gap-2 justify-center">
           <Button name="intent" value="submit" type="submit">
             Submit
-          </Button>
-          <Button name="intent" value="create" type="submit">
-            Create new ad
           </Button>
         </div>
       </Form>

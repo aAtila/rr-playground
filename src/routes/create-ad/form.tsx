@@ -2,6 +2,7 @@ import { LoaderFunctionArgs, useLoaderData, Form } from "react-router";
 import Button from "../../components/ui/button";
 import Input from "../../components/ui/input";
 import Select from "../../components/ui/select";
+import { createAd } from "../../api/create-ad";
 
 export const loader = ({ request, params }: LoaderFunctionArgs) => {
   const url = new URL(request.url);

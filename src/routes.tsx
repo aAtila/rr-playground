@@ -1,5 +1,9 @@
 import { createBrowserRouter } from "react-router";
 import App from "./App";
+import CreateAdCategory, {
+  loader as categoryLoader,
+  action as categoryAction,
+} from "./routes/create-ad/category";
 
 export const router = createBrowserRouter([
   {
@@ -7,7 +11,9 @@ export const router = createBrowserRouter([
     element: <App />,
   },
   {
-    path: "/categories",
-    element: <div>Categories</div>,
+    path: "/create-ad",
+    element: <CreateAdCategory />,
+    loader: categoryLoader,
+    action: categoryAction,
   },
 ]);

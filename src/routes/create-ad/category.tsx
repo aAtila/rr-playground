@@ -2,6 +2,14 @@ import { Form, redirect, useLoaderData } from "react-router";
 import { createAd } from "../../api/create-ad";
 import Button from "../../components/ui/button";
 
+export const CATEGORIES_MAP = new Map([
+  ["car", "Car"],
+  ["motorcycle", "Motorcycle"],
+  ["bike", "Bike"],
+  ["boat", "Boat"],
+  ["truck", "Truck"],
+]);
+
 export const loader = () => {
   return { message: "Pick a category" };
 };
@@ -26,21 +34,11 @@ export default function CreateAdCategory() {
       <h1>{message}</h1>
       <Form method="post" className="mt-8 grid gap-2">
         <div className="flex gap-2 justify-center">
-          <Button name="category" value="car">
-            Car
-          </Button>
-          <Button name="category" value="motorcycle">
-            Motorcycle
-          </Button>
-          <Button name="category" value="bike">
-            Bike
-          </Button>
-          <Button name="category" value="boat">
-            Boat
-          </Button>
-          <Button name="category" value="truck">
-            Truck
-          </Button>
+          {Array.from(CATEGORIES_MAP.entries()).map(([value, label]) => (
+            <Button name="category" value={value}>
+              {label}
+            </Button>
+          ))}
         </div>
       </Form>
     </main>

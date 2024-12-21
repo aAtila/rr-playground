@@ -1,5 +1,6 @@
 import { Form, redirect, useLoaderData } from "react-router";
 import { createAd } from "../../api/create-ad";
+import Button from "../../components/ui/button";
 
 export const loader = () => {
   return { message: "Pick a category" };
@@ -21,24 +22,26 @@ export const action = async ({ request }: { request: Request }) => {
 export default function CreateAdCategory() {
   const { message } = useLoaderData();
   return (
-    <main>
+    <main className="max-w-4xl mx-auto">
       <h1>{message}</h1>
-      <Form method="post">
-        <button name="category" value="car">
-          Car
-        </button>
-        <button name="category" value="motorcycle">
-          Motorcycle
-        </button>
-        <button name="category" value="bike">
-          Bike
-        </button>
-        <button name="category" value="boat">
-          Boat
-        </button>
-        <button name="category" value="truck">
-          Truck
-        </button>
+      <Form method="post" className="mt-8 grid gap-2">
+        <div className="flex gap-2 justify-center">
+          <Button name="category" value="car">
+            Car
+          </Button>
+          <Button name="category" value="motorcycle">
+            Motorcycle
+          </Button>
+          <Button name="category" value="bike">
+            Bike
+          </Button>
+          <Button name="category" value="boat">
+            Boat
+          </Button>
+          <Button name="category" value="truck">
+            Truck
+          </Button>
+        </div>
       </Form>
     </main>
   );

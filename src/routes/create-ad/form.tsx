@@ -1,4 +1,7 @@
 import { LoaderFunctionArgs, useLoaderData, Form } from "react-router";
+import Button from "../../components/ui/button";
+import Input from "../../components/ui/input";
+import Select from "../../components/ui/select";
 
 export const loader = ({ request, params }: LoaderFunctionArgs) => {
   const url = new URL(request.url);
@@ -18,82 +21,94 @@ export default function CreateAdForm() {
   const { id, category } = useLoaderData();
 
   return (
-    <section>
+    <main className="max-w-md mx-auto">
       <h1>Create ad</h1>
       <small>
         Category: {category}, ID: {id}
       </small>
-      <Form method="post">
-        <input type="text" name="title" placeholder="Title" />
-        <textarea name="description" placeholder="Description" />
-        <input type="text" name="price" placeholder="Price" />
+      <Form method="post" className="mt-8 grid gap-4">
+        <Input type="text" name="title" placeholder="Title" />
+        <Input type="text" name="price" placeholder="Price" />
 
-        <select name="brand" defaultValue="">
+        <Select name="brand" defaultValue="">
           <option value="" disabled>
             Select brand
           </option>
           <option value="toyota">Toyota</option>
           <option value="honda">Honda</option>
           <option value="ford">Ford</option>
-        </select>
+        </Select>
 
-        <select name="model" defaultValue="">
+        <Select name="model" defaultValue="">
           <option value="" disabled>
             Select model
           </option>
           <option value="camry">Camry</option>
           <option value="civic">Civic</option>
           <option value="focus">Focus</option>
-        </select>
+        </Select>
 
-        <input type="text" name="location" placeholder="Location" />
+        <Input type="text" name="location" placeholder="Location" />
 
-        <fieldset>
-          <legend>Transmission</legend>
-          <label>
-            <input type="radio" name="transmission" value="automatic" />
-            Automatic
-          </label>
-          <label>
-            <input type="radio" name="transmission" value="manual" />
-            Manual
-          </label>
+        <fieldset className="border border-gray-300 rounded-md p-4">
+          <legend className="px-4">Transmission</legend>
+          <div className="flex gap-4 justify-center">
+            <label>
+              <input type="radio" name="transmission" value="automatic" />
+              Automatic
+            </label>
+            <label>
+              <input type="radio" name="transmission" value="manual" />
+              Manual
+            </label>
+          </div>
         </fieldset>
 
-        <fieldset>
-          <legend>Fuel Type</legend>
-          <label>
-            <input type="radio" name="fuelType" value="petrol" />
-            Petrol
-          </label>
-          <label>
-            <input type="radio" name="fuelType" value="diesel" />
-            Diesel
-          </label>
-          <label>
-            <input type="radio" name="fuelType" value="electric" />
-            Electric
-          </label>
-          <label>
-            <input type="radio" name="fuelType" value="hybrid" />
-            Hybrid
-          </label>
+        <fieldset className="border border-gray-300 rounded-md p-4">
+          <legend className="px-4">Fuel Type</legend>
+          <div className="flex gap-4 justify-center">
+            <label>
+              <input type="radio" name="fuelType" value="petrol" />
+              Petrol
+            </label>
+            <label>
+              <input type="radio" name="fuelType" value="diesel" />
+              Diesel
+            </label>
+            <label>
+              <input type="radio" name="fuelType" value="electric" />
+              Electric
+            </label>
+            <label>
+              <input type="radio" name="fuelType" value="hybrid" />
+              Hybrid
+            </label>
+          </div>
         </fieldset>
 
-        <fieldset>
-          <legend>Condition</legend>
-          <label>
-            <input type="radio" name="condition" value="new" />
-            New
-          </label>
-          <label>
-            <input type="radio" name="condition" value="used" />
-            Used
-          </label>
+        <fieldset className="border border-gray-300 rounded-md p-4">
+          <legend className="px-4">Condition</legend>
+          <div className="flex gap-4 justify-center">
+            <label>
+              <input type="radio" name="condition" value="new" />
+              New
+            </label>
+            <label>
+              <input type="radio" name="condition" value="used" />
+              Used
+            </label>
+          </div>
         </fieldset>
 
-        <button type="submit">Submit</button>
+        <div className="flex gap-2 justify-center">
+          <Button name="intent" value="submit" type="submit">
+            Submit
+          </Button>
+          <Button name="intent" value="create" type="submit">
+            Create new ad
+          </Button>
+        </div>
       </Form>
-    </section>
+    </main>
   );
 }

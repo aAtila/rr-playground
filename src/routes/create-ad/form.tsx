@@ -12,7 +12,17 @@ export const loader = ({ request, params }: LoaderFunctionArgs) => {
 export const action = async ({ request }: { request: Request }) => {
   const formData = await request.formData();
   const data = Object.fromEntries(formData);
-  console.log(data);
+  const url = new URL(request.url);
+  const category = url.searchParams.get("category");
+  console.log(`action function:`, { data });
+
+  if (data.intent === "create" && category) {
+    const ad = await createAd(category);
+
+    console.log(`action function:`, { ad });
+
+    return { ad, formData: data };
+  }
 
   return data;
 };

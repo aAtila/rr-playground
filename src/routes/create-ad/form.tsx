@@ -10,9 +10,11 @@ import Button from "../../components/ui/button";
 import Input from "../../components/ui/input";
 import Select from "../../components/ui/select";
 import { createAd } from "../../api/create-ad";
-import { CATEGORIES_MAP } from "./category";
+import { AD_BRANDS_MAP, AD_CATEGORIES_MAP } from "../../models/ad.model";
+import { getModels } from "../../api/get-models";
+import { useState } from "react";
 
-export const loader = ({ request, params }: LoaderFunctionArgs) => {
+export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   console.log(`loader called`);
 
   const url = new URL(request.url);
@@ -34,6 +36,8 @@ export default function CreateAdForm() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const category = searchParams.get("category") || undefined;
+  const [models, setModels] = useState<string[] | undefined>();
+  const [selectedModel, setSelectedModel] = useState<string>("");
 
   const handleCategoryChange = async (
     e: React.ChangeEvent<HTMLSelectElement>
@@ -41,6 +45,13 @@ export default function CreateAdForm() {
     const newCategory = e.target.value;
     const ad = await createAd(newCategory);
     navigate(`/create-ad/${ad.id}?category=${ad.category}`);
+  };
+
+  const handleBrandChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newBrand = e.target.value;
+    const models = await getModels(newBrand);
+    setModels(models);
+    setSelectedModel("");
   };
 
   return (
@@ -54,7 +65,7 @@ export default function CreateAdForm() {
           className="p-1"
           onChange={handleCategoryChange}
         >
-          {Array.from(CATEGORIES_MAP.entries()).map(([value, label]) => (
+          {Array.from(AD_CATEGORIES_MAP.entries()).map(([value, label]) => (
             <option value={value}>{label}</option>
           ))}
         </Select>
@@ -63,22 +74,33 @@ export default function CreateAdForm() {
         <Input type="text" name="title" placeholder="Title" />
         <Input type="text" name="price" placeholder="Price" />
 
-        <Select name="brand" defaultValue="">
+        <Select
+          name="brand"
+          defaultValue=""
+          onChange={handleBrandChange}
+          className="disabled:opacity-50"
+        >
           <option value="" disabled>
             Select brand
           </option>
-          <option value="toyota">Toyota</option>
-          <option value="honda">Honda</option>
-          <option value="ford">Ford</option>
+          {Array.from(AD_BRANDS_MAP.entries()).map(([value, label]) => (
+            <option value={value}>{label}</option>
+          ))}
         </Select>
 
-        <Select name="model" defaultValue="">
+        <Select
+          name="model"
+          disabled={!models}
+          className="disabled:opacity-50"
+          value={selectedModel}
+          onChange={(e) => setSelectedModel(e.target.value)}
+        >
           <option value="" disabled>
-            Select model
+            {models ? "Select model" : null}
           </option>
-          <option value="camry">Camry</option>
-          <option value="civic">Civic</option>
-          <option value="focus">Focus</option>
+          {models?.map((model) => (
+            <option value={model}>{model}</option>
+          ))}
         </Select>
 
         <Input type="text" name="location" placeholder="Location" />

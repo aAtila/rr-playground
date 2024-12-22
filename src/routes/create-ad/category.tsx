@@ -17,11 +17,12 @@ export const action = async ({ request }: { request: Request }) => {
   const redirectUrl = new URL(`/create-ad/${ad.id}`, request.url);
   redirectUrl.searchParams.set("category", category);
 
-  return redirect(redirectUrl.toString());
+  return redirect(redirectUrl.href);
 };
 
 export default function CreateAdCategory() {
   const { message } = useLoaderData();
+
   return (
     <main className="max-w-4xl mx-auto">
       <h1>{message}</h1>
